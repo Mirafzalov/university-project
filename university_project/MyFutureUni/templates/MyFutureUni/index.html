@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load university_tags %}
+
+
+<!--<div class="container">-->
+
+
+{% block main %}
+<div class="container">
+
+    <div class="d-flex justify-content-center  col-12 py-5 ">
+
+        <!-- Блок карточек игр start   -->
+
+        <div class="col-8">
+            <div class="row row-cols-1 row-cols-md-3 g-4 ">
+                {% for university in universities %}
+                {% include 'MyFutureUni/components/_card.html' %}
+                {% endfor %}
+
+            </div>
+
+        </div>
+        <!-- Блок карточек игр end   -->
+
+
+    </div>
+
+</div>
+{% endblock main %}
+

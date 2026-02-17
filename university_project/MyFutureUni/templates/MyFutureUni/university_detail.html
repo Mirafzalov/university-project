@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+
+{% block main %}
+
+
+<!-- Блок института -->
+<div class="uni_detail">
+
+    <!--Фото институа-->
+    <div class="uni_photo w-100" style="margin: 0px; padding: 0px">
+        <img class="w-100" src="{{ university.photo.url }}" height="650">
+    </div>
+
+    <!-- Название и Описание -->
+    <div class="uni_info py-5">
+        <h1 class="px-3">{{ university.title }}</h1>
+
+        <div class="description ms-5 py-3 px-3">
+            <h5 class="ms-5" style="font-family: Calibri; line-height: 1.4">{{ university.description|linebreaks }}</h5>
+        </div>
+    </div>
+
+    <!--Отступ-->
+    <div class="test py-5" style="background-color: #001f3f"></div>
+
+    <!--Назвние и Описание Программ-->
+    <div class="program_info py-5 px-5">
+        <h2 class="text-center" style="color: navy">Образовательные программы</h2>
+
+        {% for program in programs %}
+        <div class="program_type py-3">
+            <h2 style="color: navy">{{ program.title }}</h2>
+
+            <div class="program_description">
+                <h5 class="ms-5 py-3" style="font-family: Calibri; line-height: 1.4">
+                    {{ program.description|linebreaks }}</h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Образовательные Программы Бакалавриата-->
+    <div class="major_info text-light py-2" style="background-color: #001f3f">
+        <h2 class="py-5 px-3 text-center">Программа Бакалавриата</h2>
+        <div class="majors">
+
+            <div class="d-flex justify-content-center col-12 py-5">
+                <div class="col-10">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+                        {% for major in majors %}
+                        <div class="col">
+                            <div class="card h-100 bg-light text-dark rounded border-dark">
+                                <div class="card-body d-flex align-items-center justify-content-center"
+                                     style="height: 100px">
+
+                                    <h5 class="card_title text-center text-dark">{{ major.title }}</h5>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Требование для поступления-->
+    <div class="requirements py-5">
+        <h3 class="ms-5 py-4">Требование для поступления</h3>
+
+        <div class="requirement_info ms-5">
+            <h4 class="ms-5" style="font-family: Calibri; line-height: 1.4">
+                {{ university.requirements|linebreaks }}</h4>
+            <h4 class="ms-5 mt-4" style="font-family: Calibri; line-height: 1.4"> Язык обучение:
+                {{ university.education_language }}</h4>
+            <h4 class="ms-5" style="font-family: Calibri; line-height: 1.4"> Стоимость обучение:
+                {{ university.fee }}</h4>
+        </div>
+    </div>
+    <!--Кнопка узнать подробнее-->
+    <div class="py-2 px-5 ms-5">
+        <a href="{{ university.website_link }}" class="btn btn-primary btn-lg"
+           target="_blank">
+            Узнать подробнее
+        </a>
+    </div>
+
+    <!--Видео института-->
+    <div class="video py-5" style="text-align: center">
+        <h2 class="text-center  py-5">Видео Университета</h2>
+        <iframe width="1000" height="500" src="{{ university.video_link }}"
+                title="{{ university.title }}" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    </div>
+
+    <!--Похожие Университеты-->
+    <div class="same_universities py-5 px-5">
+        <h3 class="py-3">Похожие Университеты:</h3>
+
+        <div class="row row-cols-1 row-cols-md-4 g-5 ">
+            {% for university in same_universities %}
+            {% include 'MyFutureUni/components/_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!--Блок Комментарии-->
+    <div class="comment_block mt-4  px-5 ">
+        <h3>Комментарии: </h3>
+        {% if request.user.is_authenticated %}
+        <div class="comment_form">
+            <form action="{% url 'save_comment' university.pk %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="comment_list  py-5">
+            {% for comment in comments %}
+            <div class="comment p-2 border-dark text-dark rounded mb-3" style="width: 900px; border: 1px solid black">
+
+                <div class="d-flex justify-content-between">
+
+                    <div class="comment_info d-flex align-items-start">
+                        <img src="{{ comment.get_photo }}" alt=""
+                             width="50"
+                             height="50" class="rounded-circle">
+                        <div class="comment_text px-2">
+                            <h6>{{ comment.author.username }}<small class="text-muted">
+                                {{ comment.created_at|date:"d.m.Y H:i" }}</small></h6>
+                            <p style="overflow-wrap: anywhere;">{{ comment.text }}</p>
+                        </div>
+
+                    </div>
+
+                    {% if request.user.is_authenticated and request.user == comment.author %}
+                    <div class="comment_options d-flex">
+
+                        <a href="{% url 'comment_delete' comment.pk %}" class="text-dark mx-2">
+                            <i class="bi bi-trash"></i>
+                        </a>
+
+                        <a class="text-dark mx-2" data-bs-toggle="collapse"
+                           href="#collapseExample-{{ comment.pk }}"
+                           role="button" aria-expanded="false" aria-controls="collapseExample"><i
+                                class="bi bi-pencil-square"></i></a>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                {% if request.user.is_authenticated and request.user == comment.author %}
+                <div class="collapse" id="collapseExample-{{ comment.pk }}">
+                    <div class="">
+                        <form action="{% url 'change_comment' comment.pk %}" method="post">
+                            {% csrf_token %}
+                            <p>
+                                <textarea name="text" cols="40" rows="10" class="form-control"
+                                          style="height: 60px; max-width: 900px; width: 100%;" required="" id="id_text">{{ comment.text }}</textarea>
+                            </p>
+                            <button type="submit" class="btn btn-primary">Изменить</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+
+
+</div>
+
+{% endblock main %}

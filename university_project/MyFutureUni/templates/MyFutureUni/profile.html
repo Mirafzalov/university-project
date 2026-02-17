@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="d-flex justify-content-center col-12 py-5 px-5">
+
+    <div class="col-8">
+
+        <div class="d-flex profile_info text-dark">
+            <div class="profile_photo text-center">
+                <h3>{{ profile.user.username }}</h3>
+                <img src="{{ profile.get_photo }}" alt="" height="200" width="200" class="rounded-circle">
+            </div>
+
+            <div class="text-dark mx-5 px-5 profile_detail">
+                <div class="info d-flex flex-column mt-4">
+                    <p>Имя: {{ profile.user.first_name }}</p>
+                    <p>Фамилия: {{ profile.user.last_name }}</p>
+                    <p>Почта: {{ profile.user.email }}</p>
+                    <p>Количество комментарииев: {{ profile.count_comment }}</p>
+                    <p>Дата регистрации: {{ profile.user.date_joined|date:"d.m.Y H:i" }}</p>
+                    <p>Дата посещение: {{ profile.user.last_login|date:"d.m.Y H:i" }}</p>
+                    <p>О себе: {% if profile.about %} {{ profile.about }} {% endif %}</p>
+                </div>
+
+
+<!--                <div class="requirements d-flex flex-column mt-4">-->
+<!--                    <h5>Системные требования</h5>-->
+<!--                    <p>Операционная система: {{ system.op_system }}</p>-->
+<!--                    <p>Процессор: {{ system.processor }}</p>-->
+<!--                    <p>Оперативная память: {{ system.op_memory }}</p>-->
+<!--                    <p>Видео карта: {{ system.video_card }}</p>-->
+<!--                    <p>Место на диске: {{ system.hard_memory }}</p>-->
+<!--                </div>-->
+
+
+            </div>
+
+        </div>
+
+        <div class="change_profile my-5 p-3">
+
+            <p>
+
+                <button class="btn btn__des border-dark text-light" style="background-color: darkblue;" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Редактировать профиль
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="p-3 text-dark account_form">
+                    <form action="{% url 'edit' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ account_form.as_p }}
+                        {{ profile_form.as_p }}
+
+                        <button class="btn btn__des btn-primary " type="submit">Изменить</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock main %}

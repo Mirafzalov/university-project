@@ -1,0 +1,22 @@
+
+<div class="col">
+    <div class="card h-100 bg-light text-dark  border-dark">
+
+        <a href="{% url 'university' university.id %}">
+            <img src="{{ university.photo.url }}" class="rounded" alt="..." height="300px" width="100%">
+        </a>
+        <div class="card-body">
+            <a href="{% url 'university' university.id %}" style="text-decoration: none">
+                <h5 class="card-title text-center text-dark">{{ university.title }}</h5>
+            </a>
+        </div>
+
+
+        <div class="d-flex justify-content-between p-3">
+            <small class="text-dark"><i class="bi bi-eye"></i>: {{ university.count_views }}</small>
+            <small class="text-dark"><i class="bi bi-chat-dots"></i>: {{ university.count_comment }}</small>
+        </div>
+
+
+    </div>
+</div>
